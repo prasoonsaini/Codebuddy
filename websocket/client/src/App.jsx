@@ -4,7 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
-  const [messages, setMessages] = useState(["hi there"]);
+  const [messages, setMessages] = useState([]);
   const wsRef = useRef();
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8080");
@@ -16,7 +16,8 @@ function App() {
       ws.send(JSON.stringify({
         type: "join",
         payload: {
-          roomId: "red"
+          roomId: "blue",
+          username: document.getElementById('user')?.value
         }
       }))
     }
@@ -32,13 +33,16 @@ function App() {
           <div key={index}>{message}</div>
         ))}
       </div>
+      <input id="user" type="text" placeholder='username' />
       <input id="msg" type="text" />
       <button onClick={() => {
         const message = document.getElementById("msg")?.value;
+        const username = document.getElementById("user")?.value;
         wsRef.current.send(JSON.stringify({
           type: "message",
           payload: {
-            message: message
+            message: message,
+            username: username
           }
         }))
       }}>Send message</button>
